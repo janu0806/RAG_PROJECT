@@ -1,10 +1,28 @@
 import streamlit as st
 import tempfile
+import os
+import google.generativeai as genai
 
+genai.configure(api_key="YOUR_API_KEY")
 from pdf_reader import read_pdf
 from chunking import create_chunks
 from vector_store import create_vector_store, retrieve_chunk
 from gemini_service import ask_gemini
+
+
+st.write("API KEY FOUND:", os.getenv("YOUR_API_KEY"))
+
+try:
+    genai.configure(api_key=os.getenv("YOUR_API_KEY"))
+
+    test_model = genai.GenerativeModel("gemini-2.0-flash")
+
+    if st.button("🧪 Test Gemini Connection"):
+        response = test_model.generate_content("Say hello")
+        st.success(response.text)
+
+except Exception as e:
+    st.error(f"Gemini Error: {e}")
 
 # Page Config
 st.set_page_config(
